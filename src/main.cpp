@@ -18,9 +18,8 @@ void loop() {
 // =================================
 
 void loop1() {
-  if (encoder_update_flag) {
-    EncoderUpdate();
-    encoder_update_flag = false;
-    Serial.println(angle);
+  if (encoder.isChanged()) {
+    Serial.print("Angle: ");
+    Serial.println(encoder.getAngle());
   }
 }

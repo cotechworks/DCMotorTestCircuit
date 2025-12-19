@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include "encoder.h"
 
 #define ENCODER_RESOLUTION 40.0                                         // エンコーダの分解能 (1回転あたりのパルス数)
 #define GEAR_RATIO         300.0                                        // ギア比
@@ -14,6 +15,7 @@ extern void GPIO_Init();
 extern void EncoderUpdate();
 extern void setPwm(int value, bool direction);
 extern bool RecieveSerialCommand();
+extern Encoder encoder;
 
 extern int   pwm;
 extern bool  direction;
