@@ -1,7 +1,7 @@
 #include "main.h"
 
-bool RecieveSerialCommand(){
-    if (Serial.available() > 0) {
+bool RecieveSerialCommand() {
+  if (Serial.available() > 0) {
     String command = Serial.readStringUntil('\n');
     command.trim();
 
@@ -9,12 +9,14 @@ bool RecieveSerialCommand(){
     if (command.startsWith("sta")) {
       setPwm(pwm, direction);
       Serial.println("Motor started");
+      control_mode = SPEED;
     }
 
     // ストップコマンド
     else if (command.startsWith("sto")) {
       setPwm(0, direction);
       Serial.println("Motor stopped");
+      control_mode = SPEED;
     }
 
     // PWM値設定コマンド
@@ -29,6 +31,7 @@ bool RecieveSerialCommand(){
         Serial.println("Invalid PWM value. Must be between 0 and 1024.");
         return false;
       }
+      control_mode = SPEED;
     }
 
     // 回転方向設定コマンド
@@ -42,6 +45,33 @@ bool RecieveSerialCommand(){
         Serial.println("Direction set to REVERSE");
       }
       setPwm(pwm, direction);
+      control_mode = SPEED;
+    }
+
+    // 位置指定コマンド
+    else if (command.startsWith("pos")) {
+      angle_target = command.substring(3).toFloat();
+      Serial.print("Target angle set to ");
+      Serial.println(angle_target);
+      control_mode = POSITION;
+    }
+
+    // 移動量指定コマンド
+    else if (command.startsWith("mov")) {
+      float delta = command.substring(3).toFloat();
+      angle_target = encoder.getAngle() + delta;
+      Serial.print("Moving by ");
+      Serial.print(delta);
+      Serial.print(" degrees to target angle ");
+      Serial.println(angle_target);
+      control_mode = POSITION;
+    }
+
+    // エンコーダーリセットコマンド
+    else if (command.startsWith("res")) {
+      encoder.reset();
+      angle_target = 0.0;
+      Serial.println("Encoder reset to 0 degrees");
     }
 
     // デバッグ用コマンド

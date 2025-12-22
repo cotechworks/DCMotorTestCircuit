@@ -1,15 +1,28 @@
 #include "main.h"
 
-int   pwm       = 512;   // モーターのPWM値 (0-1024)
-bool  direction = true;  // モーターの回転方向 (true: 正転, false: 逆転)
-float angle     = 0.0;   // エンコーダの角度
-int   mode      = 0;     // エンコーダの状態
-int   pre_mode  = 0;
+int   pwm          = 0;     // モーターのPWM値 (0-1024)
+bool  direction    = true;  // モーターの回転方向 (true: 正転, false: 逆転)
+float angle        = 0.0;   // エンコーダの角度
+float angle_target = 0.0;
+int   control_mode = SPEED;
 
-Encoder encoder(PIN_ENC_A, PIN_ENC_B, ANGLE_PER_PULSE, false);
+struct repeating_timer st_timer;
+bool                   timerFlag = false;
+
+Encoder     encoder(PIN_ENC_A, PIN_ENC_B, ANGLE_PER_PULSE, false);
+PID_Control pid(PID_KP, PID_KI, PID_KD, CONTROL_PERIOD_US);  // PID制御オブジェクトの生成 (Kp, Ki, Kd)
 
 void Interrupt() {
   encoder.update();
+}
+
+bool Timer(struct repeating_timer* t) {
+  timerFlag = true;
+  return true;
+}
+
+void Timer_Init() {
+  add_repeating_timer_us(CONTROL_PERIOD_US, Timer, NULL, &st_timer);
 }
 
 void GPIO_Init() {
@@ -34,8 +47,14 @@ void setPwm(int value, bool direction) {
     analogWrite(PIN_IN1, 0);
     analogWrite(PIN_IN2, value);
   }
-  Serial.print("IN1 PWM: ");
-  Serial.print(value);
-  Serial.print(", IN2 PWM: ");
-  Serial.println(direction ? 0 : value);
+}
+
+void setPwmforPid(int value) {
+  if (value >= 0) {
+    direction = true;
+    setPwm(value, direction);
+  } else {
+    direction = false;
+    setPwm(-1 * value, direction);
+  }
 }
