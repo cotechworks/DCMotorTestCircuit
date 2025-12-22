@@ -9,6 +9,7 @@ void setup() {
 
   // タイマー
   Timer_Init();
+  sendAngleTask.start();
 
   // モーター初期化
   setPwm(512, true);
@@ -27,9 +28,11 @@ void loop() {
 // =================================
 
 void loop1() {
+  // タスク更新
+  sendAngleTask.update();
+
   // エンコーダ値の出力
-  if (encoder.isChanged()) {
-    Serial.print("Angle: ");
+  if (sendAngleTask.isFired()) {
     Serial.println(encoder.getAngle());
   }
 

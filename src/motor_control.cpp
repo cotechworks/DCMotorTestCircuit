@@ -11,6 +11,7 @@ bool                   timerFlag = false;
 
 Encoder     encoder(PIN_ENC_A, PIN_ENC_B, ANGLE_PER_PULSE, false);
 PID_Control pid(PID_KP, PID_KI, PID_KD, CONTROL_PERIOD_US);  // PID制御オブジェクトの生成 (Kp, Ki, Kd)
+CycleTask sendAngleTask(10);
 
 void Interrupt() {
   encoder.update();

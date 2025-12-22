@@ -72,6 +72,7 @@ bool RecieveSerialCommand() {
       encoder.reset();
       angle_target = 0.0;
       Serial.println("Encoder reset to 0 degrees");
+      control_mode = POSITION;
     }
 
     // デバッグ用コマンド

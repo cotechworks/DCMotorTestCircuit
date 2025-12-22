@@ -1,7 +1,7 @@
 #pragma once
 
 #include <Arduino.h>
-
+#include <SimpleTask.h>
 #include <encoder.h>
 #include <pid_control.h>
 
@@ -20,9 +20,9 @@ enum {
 #define PIN_ENC_A 4
 #define PIN_ENC_B 6
 
-#define PID_KP 12.0
-#define PID_KI 0.0
-#define PID_KD 0.5
+#define PID_KP            100.0
+#define PID_KI            0.000005
+#define PID_KD            20.0
 #define CONTROL_PERIOD_US 1000
 
 extern void        GPIO_Init();
@@ -33,6 +33,7 @@ extern bool        RecieveSerialCommand();
 extern void        Timer_Init();
 extern Encoder     encoder;
 extern PID_Control pid;
+extern CycleTask   sendAngleTask;
 
 extern int   pwm;
 extern bool  direction;
