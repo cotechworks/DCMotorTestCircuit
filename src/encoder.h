@@ -1,3 +1,5 @@
+#pragma once
+
 #include <Arduino.h>
 
 class Encoder {
@@ -6,8 +8,10 @@ class Encoder {
   void  update();
   float getAngle();
   bool  isChanged();
+  void  reset();
 
  private:
+  int   judgeMode();
   int   _pinA;             // エンコーダA相のピン番号
   int   _pinB;             // エンコーダB相のピン番号
   int   _angle;            // エンコーダの現在の角度（パルス数）

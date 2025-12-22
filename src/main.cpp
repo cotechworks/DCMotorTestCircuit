@@ -18,6 +18,7 @@ void loop() {
 // =================================
 
 void loop1() {
+  // エンコーダ値の出力
   if (encoder.isChanged()) {
     Serial.print("Angle: ");
     Serial.println(encoder.getAngle());
