@@ -2,8 +2,8 @@
 
 #include <Arduino.h>
 
-#include "encoder.h"
-#include "pid_control.h"
+#include <encoder.h>
+#include <pid_control.h>
 
 enum {
   SPEED,
